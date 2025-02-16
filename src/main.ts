@@ -17,7 +17,7 @@ async function bootstrap() {
     openapi: '3.1.0',
   });
 
-  await app.listen(3001);
+  await app.listen(3000);
 }
 bootstrap();
 
