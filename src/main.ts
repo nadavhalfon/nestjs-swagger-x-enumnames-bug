@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,40 +12,8 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, {
-    ...fixEnumNames(document),
-    openapi: '3.1.0',
-  });
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
 bootstrap();
-
-function fixEnumNames(document: OpenAPIObject): OpenAPIObject {
-  function recurseProperties(schema: any) {
-    if (schema.properties) {
-      for (const property in schema.properties) {
-        const propertySchema = schema.properties[property];
-
-        // If 'x-enumNames' exists, apply the fix
-        if (propertySchema['x-enumNames'] && propertySchema.$ref) {
-          const enumName = propertySchema.$ref.split('/').pop();
-          document.components.schemas[enumName]['x-enumNames'] =
-            propertySchema['x-enumNames'];
-          delete propertySchema['x-enumNames'];
-        }
-
-        // Recursively handle nested properties
-        recurseProperties(propertySchema);
-      }
-    }
-  }
-
-  // Iterate over all schemas and apply the fix
-  for (const schemaName in document.components.schemas) {
-    const schema = document.components.schemas[schemaName];
-    recurseProperties(schema);
-  }
-
-  return document;
-}
