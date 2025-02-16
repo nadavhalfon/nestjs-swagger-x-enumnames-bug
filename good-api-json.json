@@ -1,0 +1,64 @@
+{
+  "openapi": "3.1.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Meeting"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "Meetings example",
+    "description": "The meetings API description",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "StatusEnum": {
+        "type": "number",
+        "description": "The status of the meeting",
+        "enum": [
+          1,
+          2,
+          3
+        ],
+        "x-enumNames": [
+          "APPROVED",
+          "PENDING",
+          "REJECTED"
+        ]
+      },
+      "Meeting": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/StatusEnum"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "name"
+        ]
+      }
+    }
+  }
+}
